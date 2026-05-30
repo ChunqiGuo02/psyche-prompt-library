@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const PROMPTS_DIR = path.join(ROOT, "prompts");
 const REPORTS_DIR = path.join(ROOT, "reports");
+const WRITE_REPORT = !process.argv.includes("--no-report");
 const REQUIRED_TOP_LEVEL_KEYS = [
   "id",
   "title",
@@ -238,7 +239,9 @@ async function main() {
     errors,
     warnings
   };
-  await writeFile(path.join(REPORTS_DIR, "validation-report.json"), JSON.stringify(report, null, 2) + "\n", "utf8");
+  if (WRITE_REPORT) {
+    await writeFile(path.join(REPORTS_DIR, "validation-report.json"), JSON.stringify(report, null, 2) + "\n", "utf8");
+  }
 
   if (errors.length > 0) {
     console.error(`Validation failed with ${errors.length} error(s).`);
